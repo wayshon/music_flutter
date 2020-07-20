@@ -14,7 +14,7 @@ class HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    AudioPlayer.logEnabled = true;
+    // AudioPlayer.logEnabled = true;
   }
 
   @override
@@ -23,11 +23,17 @@ class HomeState extends State<Home> {
       appBar: AppBar(
         title: Text('Home'),
       ),
-      body: Center(
-        child: RaisedButton(
-          onPressed: play,
-          child: Text('播放'),
-        ),
+      body: Column(
+        children: <Widget>[
+          RaisedButton(
+            onPressed: playLocal,
+            child: Text('播放本地'),
+          ),
+          RaisedButton(
+            onPressed: play,
+            child: Text('播放线上'),
+          ),
+        ],
       ),
     );
   }
@@ -37,7 +43,8 @@ class HomeState extends State<Home> {
   }
 
   play() async {
-    int result = await audioPlayer.play('assets/audio/Leo.mp3', isLocal: true);
+    int result = await audioPlayer
+        .play('https://calcbit.com/resource/audio/Ultraman/Seven.mp3');
     if (result == 1) {
       print('play success ==');
     } else {
@@ -45,7 +52,7 @@ class HomeState extends State<Home> {
     }
 
     audioPlayer.onAudioPositionChanged.listen((p) async {
-      print('=========   ${p.inMilliseconds}');
+      print('inMilliseconds =========   ${p.inMilliseconds}');
     });
   }
 }
