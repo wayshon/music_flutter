@@ -152,7 +152,7 @@ class PlayerState extends State<Player> {
     print("_controllers");
 
     return [
-      lyric != null ? panel : null,
+      // lyric != null ? panel : null,
       const Divider(color: Colors.transparent),
       const Divider(
         color: Colors.transparent,
