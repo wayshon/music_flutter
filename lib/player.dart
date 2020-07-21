@@ -15,7 +15,7 @@ class Player extends StatefulWidget {
   final Function(String) onError;
 
   ///播放完成
-  final Function() onCompleted;
+  final void Function(void) onCompleted;
 
   /// 上一首
   final Function() onPrevious;
@@ -74,18 +74,17 @@ class PlayerState extends State<Player> {
 
     audioPlayer = new AudioPlayer();
     audioPlayer
-      ..completionHandler = widget.onCompleted
-      ..errorHandler = widget.onError
-      ..durationHandler = ((duration) {
+      ..onPlayerCompletion.listen(widget.onCompleted)
+      ..onPlayerError.listen(widget.onError)
+      ..onDurationChanged.listen((duration) {
         setState(() {
           this.duration = duration;
-
           if (position != null) {
             this.sliderValue = (position.inSeconds / duration.inSeconds);
           }
         });
       })
-      ..positionHandler = ((position) {
+      ..onAudioPositionChanged.listen((position) {
         setState(() {
           this.position = position;
 
@@ -125,13 +124,13 @@ class PlayerState extends State<Player> {
   @override
   Widget build(BuildContext context) {
     return new Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+      crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.end,
-      children: _controllers(context),
+      children: buildContent(context),
     );
   }
 
-  Widget _timer(BuildContext context) {
+  Widget buildTimer(BuildContext context) {
     var style = new TextStyle(color: widget.color);
     return new Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -149,7 +148,7 @@ class PlayerState extends State<Player> {
     );
   }
 
-  List<Widget> _controllers(BuildContext context) {
+  List<Widget> buildContent(BuildContext context) {
     print("_controllers");
 
     return [
@@ -226,7 +225,7 @@ class PlayerState extends State<Player> {
           horizontal: 16.0,
           vertical: 8.0,
         ),
-        child: _timer(context),
+        child: buildTimer(context),
       ),
     ];
   }
