@@ -1,8 +1,8 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import './model/lyric.dart';
-import './utils.dart';
-import './widget/lyric_panel.dart';
+// import './model/lyric.dart';
+// import './utils.dart';
+// import './widget/lyric_panel.dart';
 
 class Player extends StatefulWidget {
   /// [AudioPlayer] 播放地址
@@ -56,21 +56,21 @@ class PlayerState extends State<Player> {
   Duration duration;
   Duration position;
   double sliderValue;
-  Lyric lyric;
-  LyricPanel panel;
-  PositionChangeHandler handler;
+  // Lyric lyric;
+  // LyricPanel panel;
+  // PositionChangeHandler handler;
 
   @override
   void initState() {
     super.initState();
     print("audioUrl:" + widget.audioUrl);
-    Utils.getLyricFromTxt().then((Lyric lyric) {
-      print("getLyricFromTxt:" + lyric.slices.length.toString());
-      setState(() {
-        this.lyric = lyric;
-        panel = new LyricPanel(this.lyric);
-      });
-    });
+    // Utils.getLyricFromTxt().then((Lyric lyric) {
+    //   // print("getLyricFromTxt:" + lyric.slices.length.toString());
+    //   setState(() {
+    //     this.lyric = lyric;
+    //     panel = new LyricPanel(this.lyric);
+    //   });
+    // });
 
     audioPlayer = new AudioPlayer();
     audioPlayer
@@ -88,9 +88,9 @@ class PlayerState extends State<Player> {
         setState(() {
           this.position = position;
 
-          if (panel != null) {
-            panel.handler(position.inSeconds);
-          }
+          // if (panel != null) {
+          //   panel.handler(position.inSeconds);
+          // }
 
           if (duration != null) {
             this.sliderValue = (position.inSeconds / duration.inSeconds);
@@ -111,10 +111,10 @@ class PlayerState extends State<Player> {
     super.dispose();
   }
 
-  String _formatDuration(Duration d) {
+  String formatDuration(Duration d) {
     int minute = d.inMinutes;
     int second = (d.inSeconds > 60) ? (d.inSeconds % 60) : d.inSeconds;
-    print(d.inMinutes.toString() + "======" + d.inSeconds.toString());
+    // print(d.inMinutes.toString() + "======" + d.inSeconds.toString());
     String format = ((minute < 10) ? "0$minute" : "$minute") +
         ":" +
         ((second < 10) ? "0$second" : "$second");
@@ -135,13 +135,23 @@ class PlayerState extends State<Player> {
     return new Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       mainAxisSize: MainAxisSize.max,
+      // children: <Widget>[
+      //   new Text(
+      //     "--:--",
+      //     style: style,
+      //   ),
+      //   new Text(
+      //     "--:--",
+      //     style: style,
+      //   ),
+      // ],
       children: <Widget>[
         new Text(
-          position == null ? "--:--" : _formatDuration(position),
+          position == null ? "--:--" : formatDuration(position),
           style: style,
         ),
         new Text(
-          duration == null ? "--:--" : _formatDuration(duration),
+          duration == null ? "--:--" : formatDuration(duration),
           style: style,
         ),
       ],
@@ -149,8 +159,6 @@ class PlayerState extends State<Player> {
   }
 
   List<Widget> buildContent(BuildContext context) {
-    print("_controllers");
-
     return [
       // lyric != null ? panel : null,
       const Divider(color: Colors.transparent),

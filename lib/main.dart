@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 // import './home.dart';
-// import './detail.dart';
-import './animate/pointer.dart';
+import './detail.dart';
+// import './animate/pointer.dart';
+// import './animate/disc.dart';
 
 void main() {
   runApp(MyApp());
@@ -12,7 +13,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: 'Music',
-      home: new Pointer(),
+      home: Detail(),
+      // home: Padding(
+      //   padding: const EdgeInsets.only(top: 60.0),
+      //   child: Stack(
+      //     alignment: const FractionalOffset(0.5, 0.0),
+      //     children: <Widget>[new Disc(), new Pointer()],
+      //   ),
+      // ),
       theme: new ThemeData(
         primaryColor: Colors.blue,
       ),

@@ -24,7 +24,7 @@ class LyricState extends State<LyricPanel> {
     super.initState();
     widget
       ..handler = ((position) {
-        print("..handler" + position.toString());
+        // print("..handler" + position.toString());
         LyricSlice slice = widget.lyric.slices[index];
         if (position > slice.in_second) {
           index++;
