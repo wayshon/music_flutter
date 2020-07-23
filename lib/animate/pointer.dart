@@ -20,7 +20,7 @@ import 'dart:math';
 //             decoration: BoxDecoration(
 //               image: DecorationImage(
 //                 alignment: Alignment.topCenter,
-//                 image: AssetImage("assets/images/play_needle.png"),
+//                 image: AssetImage("assets/images/pointer.png"),
 //               ),
 //             ),
 //           ),
@@ -46,7 +46,7 @@ class PointerAnimate extends StatelessWidget {
         return Column(
           children: <Widget>[
             Transform(
-              alignment: Alignment.topLeft,
+              alignment: Alignment.topCenter,
               transform: Matrix4.rotationZ(animation.value),
               child: child,
             )
@@ -74,7 +74,7 @@ class PointerState extends State<Pointer> with SingleTickerProviderStateMixin {
     super.initState();
     controller =
         AnimationController(duration: Duration(milliseconds: 500), vsync: this);
-    animation = Tween(begin: -pi / 4, end: 0.0).animate(controller);
+    animation = Tween(begin: -pi / 6, end: 0.0).animate(controller);
     controller.forward();
   }
 
@@ -92,12 +92,12 @@ class PointerState extends State<Pointer> with SingleTickerProviderStateMixin {
     return PointerAnimate(
         animation: animation,
         child: Container(
-          height: 300.0,
-          width: 100.0,
+          height: 128.0,
+          width: 172.0,
           decoration: BoxDecoration(
             image: DecorationImage(
-              alignment: Alignment.topCenter,
-              image: AssetImage("assets/images/play_needle.png"),
+              alignment: Alignment(0.5, -1.0),
+              image: AssetImage("assets/images/pointer.png"),
             ),
           ),
         ));

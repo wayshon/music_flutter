@@ -111,6 +111,22 @@ class PlayerState extends State<Player> {
     super.dispose();
   }
 
+  void play() {
+    if (isPlaying)
+      audioPlayer.pause();
+    else {
+      audioPlayer.play(
+        widget.audioUrl,
+        isLocal: widget.isLocal,
+        volume: widget.volume,
+      );
+    }
+    setState(() {
+      isPlaying = !isPlaying;
+      widget.onPlaying(isPlaying);
+    });
+  }
+
   String formatDuration(Duration d) {
     int minute = d.inMinutes;
     int second = (d.inSeconds > 60) ? (d.inSeconds % 60) : d.inSeconds;
@@ -135,16 +151,6 @@ class PlayerState extends State<Player> {
     return new Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       mainAxisSize: MainAxisSize.max,
-      // children: <Widget>[
-      //   new Text(
-      //     "--:--",
-      //     style: style,
-      //   ),
-      //   new Text(
-      //     "--:--",
-      //     style: style,
-      //   ),
-      // ],
       children: <Widget>[
         new Text(
           position == null ? "--:--" : formatDuration(position),
@@ -184,21 +190,7 @@ class PlayerState extends State<Player> {
               ),
             ),
             new IconButton(
-              onPressed: () {
-                if (isPlaying)
-                  audioPlayer.pause();
-                else {
-                  audioPlayer.play(
-                    widget.audioUrl,
-                    isLocal: widget.isLocal,
-                    volume: widget.volume,
-                  );
-                }
-                setState(() {
-                  isPlaying = !isPlaying;
-                  widget.onPlaying(isPlaying);
-                });
-              },
+              onPressed: play,
               padding: const EdgeInsets.all(0.0),
               icon: new Icon(
                 isPlaying ? Icons.pause : Icons.play_arrow,

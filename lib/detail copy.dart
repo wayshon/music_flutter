@@ -52,7 +52,7 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
         new Container(
           decoration: new BoxDecoration(
             image: new DecorationImage(
-              image: AssetImage('assets/images/detail_bg.jpeg'),
+              image: AssetImage('assets/images/background.jpg'),
               fit: BoxFit.cover,
               colorFilter: new ColorFilter.mode(
                 Colors.black54,
@@ -103,7 +103,7 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
               //         alignment: FractionalOffset.topLeft,
               //         child: new Container(
               //           width: 100.0,
-              //           child: new Image.asset("assets/images/play_needle.png"),
+              //           child: new Image.asset("assets/images/pointer.png"),
               //         ),
               //       ),
               //     ),

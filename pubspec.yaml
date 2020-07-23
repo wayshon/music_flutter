@@ -50,8 +50,11 @@ flutter:
     - assets/audio/Leo.mp3
     - assets/audio/Seven.mp3
     - assets/audio/Ultraman.mp3
-    - assets/images/detail_bg.jpeg
-    - assets/images/play_needle.png
+    - assets/images/background.jpg
+    - assets/images/pointer.png
+    - assets/images/cover.jpg
+    - assets/images/disc.png
+    - assets/images/play.png
     - assets/txt/lyric.txt
 
   # An image asset can refer to one or more resolution-specific "variants", see

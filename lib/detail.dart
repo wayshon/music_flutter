@@ -23,7 +23,7 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
         new Container(
           decoration: new BoxDecoration(
             image: new DecorationImage(
-              image: AssetImage('assets/images/detail_bg.jpeg'),
+              image: AssetImage('assets/images/background.jpg'),
               fit: BoxFit.cover,
               colorFilter: new ColorFilter.mode(
                 Colors.black54,
@@ -52,19 +52,45 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
             elevation: 0.0,
             title: Container(
               child: Text(
-                'Shape of You - Ed Sheeran',
+                'ブルーバード（青鸟）',
                 style: new TextStyle(fontSize: 13.0),
               ),
             ),
           ),
           body: new Stack(
-            alignment: const FractionalOffset(0.5, 0.0),
+            alignment: Alignment.topCenter,
             children: <Widget>[
               Stack(
-                alignment: const FractionalOffset(0.5, 0.0),
+                alignment: Alignment.topCenter,
                 children: <Widget>[
-                  new Disc(isPlaying: isPlaying),
-                  new Pointer(isPlaying: isPlaying)
+                  Stack(
+                    alignment: Alignment.topCenter,
+                    children: <Widget>[
+                      new GestureDetector(
+                        onTap: () {
+                          print('===================');
+                        },
+                        child: new Disc(isPlaying: isPlaying),
+                      ),
+                      !isPlaying
+                          ? Padding(
+                              padding: EdgeInsets.only(top: 186.0),
+                              child: Container(
+                                height: 56.0,
+                                width: 56.0,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                    alignment: Alignment.topCenter,
+                                    image: AssetImage("assets/images/play.png"),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Text('')
+                    ],
+                  ),
+                  new Pointer(isPlaying: isPlaying),
                 ],
               ),
               new Padding(
@@ -81,13 +107,6 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
                   onNext: () {},
                   onCompleted: (void s) {},
                   onPlaying: (playing) {
-                    // if (isPlaying) {
-                    //   controller_record.forward();
-                    //   controller_needle.forward();
-                    // } else {
-                    //   controller_record.stop(canceled: false);
-                    //   controller_needle.reverse();
-                    // }
                     setState(() {
                       isPlaying = playing;
                     });

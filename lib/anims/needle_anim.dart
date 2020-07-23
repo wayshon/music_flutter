@@ -51,7 +51,7 @@ class AnimatedNeedle extends AnimatedWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                image: AssetImage("assets/images/play_needle.png"),
+                image: AssetImage("assets/images/pointer.png"),
               ),
             ),
           )),

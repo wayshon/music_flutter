@@ -17,8 +17,7 @@ class RotateRecord extends AnimatedWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               image: DecorationImage(
-                image: NetworkImage(
-                    "https://images-na.ssl-images-amazon.com/images/I/51inO4DBH0L._SS500.jpg"),
+                image: AssetImage("assets/images/cover.jpg"),
               ),
             ),
           )),
