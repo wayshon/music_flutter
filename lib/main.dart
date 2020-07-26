@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import './detail.dart';
 // import './animate/pointer.dart';
 // import './animate/disc.dart';
+// import './demo/demo.dart';
 
 void main() {
   runApp(MyApp());
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
       //   padding: const EdgeInsets.only(top: 60.0),
       //   child: Stack(
       //     alignment: const FractionalOffset(0.5, 0.0),
-      //     children: <Widget>[new Disc(), new Pointer()],
+      //     children: <Widget>[ParentScreen()],
       //   ),
       // ),
       theme: new ThemeData(

@@ -4,7 +4,7 @@ import './player.dart';
 import './animate/pointer.dart';
 import './animate/disc.dart';
 
-final GlobalKey<PlayerState> musicPlayerKey = new GlobalKey();
+GlobalKey<PlayerState> playerKey = GlobalKey();
 
 const mp3Url = 'https://calcbit.com/resource/audio/Ultraman/Seven.mp3';
 
@@ -63,39 +63,40 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
               Stack(
                 alignment: Alignment.topCenter,
                 children: <Widget>[
-                  Stack(
-                    alignment: Alignment.topCenter,
-                    children: <Widget>[
-                      new GestureDetector(
-                        onTap: () {
-                          print('===================');
-                        },
-                        child: new Disc(isPlaying: isPlaying),
-                      ),
-                      !isPlaying
-                          ? Padding(
-                              padding: EdgeInsets.only(top: 186.0),
-                              child: Container(
-                                height: 56.0,
-                                width: 56.0,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                    alignment: Alignment.topCenter,
-                                    image: AssetImage("assets/images/play.png"),
+                  new GestureDetector(
+                      onTap: () {
+                        playerKey.currentState.play();
+                      },
+                      child: Stack(
+                        alignment: Alignment.topCenter,
+                        children: <Widget>[
+                          new Disc(isPlaying: isPlaying),
+                          !isPlaying
+                              ? Padding(
+                                  padding: EdgeInsets.only(top: 186.0),
+                                  child: Container(
+                                    height: 56.0,
+                                    width: 56.0,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                        alignment: Alignment.topCenter,
+                                        image: AssetImage(
+                                            "assets/images/play.png"),
+                                      ),
+                                    ),
                                   ),
-                                ),
-                              ),
-                            )
-                          : Text('')
-                    ],
-                  ),
+                                )
+                              : Text('')
+                        ],
+                      )),
                   new Pointer(isPlaying: isPlaying),
                 ],
               ),
               new Padding(
                 padding: const EdgeInsets.only(bottom: 20.0),
                 child: new Player(
+                  key: playerKey,
                   onError: (e) {
                     Scaffold.of(context).showSnackBar(
                       new SnackBar(
@@ -111,7 +112,6 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
                       isPlaying = playing;
                     });
                   },
-                  key: musicPlayerKey,
                   color: Colors.white,
                   audioUrl: mp3Url,
                 ),
