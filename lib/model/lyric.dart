@@ -1,15 +1,13 @@
 class Lyric {
-  List<LyricSlice> slices;
+  List<LyricModel> list;
 
-  Lyric(this.slices);
+  Lyric(this.list);
 }
 
-class LyricSlice {
-  int in_second; //歌词片段开始时间
-  String slice; //片段内容
+class LyricModel {
+  int millisecond; //歌词片段开始时间
+  String lrc; //片段内容
+  String tlyric; //片段翻译
 
-  Lyric(int in_second, String slice) {
-    this.in_second = in_second;
-    this.slice = slice;
-  }
+  LyricModel(this.millisecond, this.lrc, this.tlyric);
 }

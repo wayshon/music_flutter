@@ -6,7 +6,9 @@ import './animate/disc.dart';
 
 GlobalKey<PlayerState> playerKey = GlobalKey();
 
-const mp3Url = 'https://calcbit.com/resource/audio/Ultraman/Seven.mp3';
+// const mp3Url = 'https://calcbit.com/resource/audio/Ultraman/Seven.mp3';
+const mp3Url =
+    'http://m10.music.126.net/20200726185206/efc976c20c38e8d5edc002a6cc44349e/ymusic/7513/b5b4/63cb/d2fce41a5aa3efef23233b1e29455b79.mp3';
 
 class Detail extends StatefulWidget {
   @override

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import '../model/lyric.dart';
 
-typedef void PositionChangeHandler(int second);
+typedef void PositionChangeHandler(int millisecond);
 
 class LyricPanel extends StatefulWidget {
   final Lyric lyric;
   PositionChangeHandler handler;
 
-  LyricPanel(@required this.lyric);
+  LyricPanel(this.lyric);
 
   @override
   State<StatefulWidget> createState() {
@@ -17,22 +17,20 @@ class LyricPanel extends StatefulWidget {
 
 class LyricState extends State<LyricPanel> {
   int index = 0;
-  LyricSlice currentSlice;
+  LyricModel currentSlice;
 
   @override
   void initState() {
     super.initState();
-    widget
-      ..handler = ((position) {
-        // print("..handler" + position.toString());
-        LyricSlice slice = widget.lyric.slices[index];
-        if (position > slice.in_second) {
-          index++;
-          setState(() {
-            currentSlice = slice;
-          });
-        }
-      });
+    widget.handler = ((position) {
+      LyricModel model = widget.lyric.list[index];
+      if (position > model.millisecond) {
+        index++;
+        setState(() {
+          currentSlice = model;
+        });
+      }
+    });
   }
 
   @override
@@ -41,11 +39,21 @@ class LyricState extends State<LyricPanel> {
       child: new Center(
         child: new Container(
           padding: EdgeInsets.only(bottom: 10.0),
-          child: Text(
-            currentSlice != null ? currentSlice.slice : "",
-            style: new TextStyle(
-              color: Colors.white,
-            ),
+          child: Column(
+            children: <Widget>[
+              Text(
+                currentSlice != null ? currentSlice.lrc : "",
+                style: new TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+              Text(
+                currentSlice != null ? currentSlice.tlyric : "",
+                style: new TextStyle(
+                  color: Colors.white,
+                ),
+              )
+            ],
           ),
         ),
       ),
@@ -54,13 +62,13 @@ class LyricState extends State<LyricPanel> {
 
   List<Widget> buildLyricItems(Lyric lyric) {
     List<Widget> items = new List();
-    for (LyricSlice slice in lyric.slices) {
-      if (slice != null && slice.slice != null) {
+    for (LyricModel model in lyric.list) {
+      if (model != null && model.lrc != null) {
         items.add(new Center(
           child: new Container(
             padding: EdgeInsets.only(bottom: 10.0),
             child: Text(
-              slice.slice,
+              model.lrc,
               style: new TextStyle(
                 color: Colors.white,
               ),

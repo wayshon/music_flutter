@@ -1,8 +1,11 @@
+import 'dart:convert';
+
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-// import './model/lyric.dart';
-// import './utils.dart';
 // import './widget/lyric_panel.dart';
+import './utils/lyric.dart';
+import './model/lyric.dart';
+import './widget/lyricPannel.dart';
 
 class Player extends StatefulWidget {
   /// [AudioPlayer] 播放地址
@@ -56,21 +59,19 @@ class PlayerState extends State<Player> {
   Duration duration;
   Duration position;
   double sliderValue;
-  // Lyric lyric;
-  // LyricPanel panel;
-  // PositionChangeHandler handler;
+  Lyric lyric;
+  LyricPanel panel;
 
   @override
   void initState() {
     super.initState();
-    print("audioUrl:" + widget.audioUrl);
-    // Utils.getLyricFromTxt().then((Lyric lyric) {
-    //   // print("getLyricFromTxt:" + lyric.slices.length.toString());
-    //   setState(() {
-    //     this.lyric = lyric;
-    //     panel = new LyricPanel(this.lyric);
-    //   });
-    // });
+
+    LyricUtil.loadJson().then((Lyric lyric) {
+      setState(() {
+        this.lyric = lyric;
+        panel = new LyricPanel(this.lyric);
+      });
+    });
 
     audioPlayer = new AudioPlayer();
     audioPlayer
@@ -88,9 +89,9 @@ class PlayerState extends State<Player> {
         setState(() {
           this.position = position;
 
-          // if (panel != null) {
-          //   panel.handler(position.inSeconds);
-          // }
+          if (panel != null) {
+            panel.handler(position.inMilliseconds);
+          }
 
           if (duration != null) {
             this.sliderValue = (position.inSeconds / duration.inSeconds);
@@ -130,7 +131,6 @@ class PlayerState extends State<Player> {
   String formatDuration(Duration d) {
     int minute = d.inMinutes;
     int second = (d.inSeconds > 60) ? (d.inSeconds % 60) : d.inSeconds;
-    // print(d.inMinutes.toString() + "======" + d.inSeconds.toString());
     String format = ((minute < 10) ? "0$minute" : "$minute") +
         ":" +
         ((second < 10) ? "0$second" : "$second");
@@ -165,8 +165,7 @@ class PlayerState extends State<Player> {
   }
 
   List<Widget> buildContent(BuildContext context) {
-    return [
-      // lyric != null ? panel : null,
+    final List<Widget> list = [
       const Divider(color: Colors.transparent),
       const Divider(
         color: Colors.transparent,
@@ -228,5 +227,11 @@ class PlayerState extends State<Player> {
         child: buildTimer(context),
       ),
     ];
+
+    if (panel != null) {
+      list.insert(0, panel);
+    }
+
+    return list;
   }
 }
