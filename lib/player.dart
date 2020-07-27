@@ -1,15 +1,14 @@
-import 'dart:convert';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-// import './widget/lyric_panel.dart';
 import './utils/lyric.dart';
 import './model/lyric.dart';
 import './widget/lyricPannel.dart';
+import './model/audio.dart';
+
+const _LyricPath = 'https://calcbit.com/resource/lyric/';
 
 class Player extends StatefulWidget {
-  /// [AudioPlayer] 播放地址
-  final String audioUrl;
+  AudioModel model;
 
   /// 音量
   final double volume;
@@ -35,8 +34,8 @@ class Player extends StatefulWidget {
   /// 是否是本地资源
   final bool isLocal;
 
-  const Player(
-      {@required this.audioUrl,
+  Player(
+      {@required this.model,
       @required this.onCompleted,
       @required this.onError,
       @required this.onNext,
@@ -65,13 +64,12 @@ class PlayerState extends State<Player> {
   @override
   void initState() {
     super.initState();
-
-    LyricUtil.loadJson().then((Lyric lyric) {
-      setState(() {
-        this.lyric = lyric;
-        panel = new LyricPanel(this.lyric);
-      });
-    });
+    // LyricUtil.loadJson(_LyricPath + widget.model.id).then((Lyric lyric) {
+    //   setState(() {
+    //     this.lyric = lyric;
+    //     panel = new LyricPanel(this.lyric);
+    //   });
+    // });
 
     audioPlayer = new AudioPlayer();
     audioPlayer
@@ -117,7 +115,7 @@ class PlayerState extends State<Player> {
       audioPlayer.pause();
     else {
       audioPlayer.play(
-        widget.audioUrl,
+        widget.model.url,
         isLocal: widget.isLocal,
         volume: widget.volume,
       );

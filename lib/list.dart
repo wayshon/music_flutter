@@ -6,6 +6,7 @@ import 'store/favor.dart';
 import 'dart:io';
 import 'dart:convert';
 import './model/audio.dart';
+import './detail.dart';
 
 const _ListUrl = 'https://calcbit.com/resource/audio/mp3/list.json';
 
@@ -112,10 +113,7 @@ class Cell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isSaved = favorites.contains(model);
-    print(favorites.first);
-    print('=========================');
-    print(model);
+    bool isSaved = favorites.any((v) => v.id == model.id);
     return new ListTile(
       title: new Text(
         model.name,
@@ -137,8 +135,9 @@ class Cell extends StatelessWidget {
         },
       ),
       onTap: () {
-        // TODO:paly
-        print('paly');
+        Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
+          return new Detail(model);
+        }));
       },
     );
   }

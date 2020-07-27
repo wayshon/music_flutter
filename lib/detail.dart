@@ -3,21 +3,25 @@ import 'dart:ui';
 import './player.dart';
 import './animate/pointer.dart';
 import './animate/disc.dart';
+import './model/audio.dart';
 
 GlobalKey<PlayerState> playerKey = GlobalKey();
 
 // const mp3Url = 'https://calcbit.com/resource/audio/Ultraman/Seven.mp3';
-const mp3Url =
-    'http://m10.music.126.net/20200726185206/efc976c20c38e8d5edc002a6cc44349e/ymusic/7513/b5b4/63cb/d2fce41a5aa3efef23233b1e29455b79.mp3';
+// const mp3Url =
+//     'http://m10.music.126.net/20200726185206/efc976c20c38e8d5edc002a6cc44349e/ymusic/7513/b5b4/63cb/d2fce41a5aa3efef23233b1e29455b79.mp3';
 
 class Detail extends StatefulWidget {
+  AudioModel model;
+
+  Detail(this.model);
+
   @override
   State<StatefulWidget> createState() => new DetailState();
 }
 
 class DetailState extends State<Detail> with TickerProviderStateMixin {
   bool isPlaying = false;
-
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -25,7 +29,7 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
         new Container(
           decoration: new BoxDecoration(
             image: new DecorationImage(
-              image: AssetImage('assets/images/background.jpg'),
+              image: NetworkImage(widget.model.background),
               fit: BoxFit.cover,
               colorFilter: new ColorFilter.mode(
                 Colors.black54,
@@ -54,7 +58,7 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
             elevation: 0.0,
             title: Container(
               child: Text(
-                'ブルーバード（青鸟）',
+                widget.model.name,
                 style: new TextStyle(fontSize: 13.0),
               ),
             ),
@@ -72,7 +76,10 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
                       child: Stack(
                         alignment: Alignment.topCenter,
                         children: <Widget>[
-                          new Disc(isPlaying: isPlaying),
+                          new Disc(
+                            isPlaying: isPlaying,
+                            cover: widget.model.cover,
+                          ),
                           !isPlaying
                               ? Padding(
                                   padding: EdgeInsets.only(top: 186.0),
@@ -115,7 +122,7 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
                     });
                   },
                   color: Colors.white,
-                  audioUrl: mp3Url,
+                  model: widget.model,
                 ),
               ),
             ],

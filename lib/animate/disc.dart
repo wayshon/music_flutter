@@ -31,9 +31,10 @@ class DiscAnimate extends StatelessWidget {
 }
 
 class Disc extends StatefulWidget {
+  final String cover;
   final bool isPlaying;
 
-  Disc({this.isPlaying});
+  Disc({@required this.isPlaying, @required this.cover});
 
   @override
   State<StatefulWidget> createState() => new DiscState();
@@ -88,7 +89,7 @@ class DiscState extends State<Disc> with SingleTickerProviderStateMixin {
                 shape: BoxShape.circle,
                 image: DecorationImage(
                   alignment: Alignment.topCenter,
-                  image: AssetImage("assets/images/cover.jpg"),
+                  image: NetworkImage(widget.cover),
                 ),
               ),
             ),

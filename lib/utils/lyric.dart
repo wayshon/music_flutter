@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:core';
-import 'package:flutter/services.dart';
 import '../model/lyric.dart';
+import 'dart:io';
 
 RegExp reg = new RegExp(r'(\[\d\d:\d\d.*\])');
 
@@ -18,42 +18,51 @@ class LyricUtilMapValueModel {
 }
 
 class LyricUtil {
-  static Future<Lyric> loadJson() async {
-    String jsonString = await rootBundle.loadString('assets/json/lyric.json');
-    final data = jsonDecode(jsonString);
-    String lrcString = data['lrc']['lyric'];
-    String tlyricString = data['tlyric']['lyric'];
-    final map = new Map<int, LyricUtilMapValueModel>();
-    for (String line in lrcString.split('\n')) {
-      if (line == null || line == '') {
-        continue;
+  static Future<Lyric> loadJson(url) async {
+    final httpClient = new HttpClient();
+    try {
+      final request = await httpClient.getUrl(Uri.parse(url));
+      final response = await request.close();
+      if (response.statusCode == HttpStatus.ok) {
+        final json = await response.transform(utf8.decoder).join();
+        final data = jsonDecode(json);
+        String lrcString = data['lrc']['lyric'];
+        String tlyricString = data['tlyric']['lyric'];
+        final map = new Map<int, LyricUtilMapValueModel>();
+        for (String line in lrcString.split('\n')) {
+          if (line == null || line == '') {
+            continue;
+          }
+          LyricUtilTextModel v = getLyric(line);
+          if (v.time == -1) {
+            continue;
+          }
+          map[v.time] = new LyricUtilMapValueModel(v.text, '');
+        }
+        if (tlyricString != null) {
+          for (String line in tlyricString.split('\n')) {
+            if (line == null || line == '') {
+              continue;
+            }
+            LyricUtilTextModel v = getLyric(line);
+            if (v.time == -1) {
+              continue;
+            }
+            if (map[v.time] != null) {
+              map[v.time].tlyric = v.text;
+            }
+          }
+        }
+        final list = new List<LyricModel>();
+        map.forEach((key, value) {
+          LyricModel v = new LyricModel(key, value.lrc, value.tlyric);
+          list.add(v);
+        });
+        return new Lyric(list);
       }
-      LyricUtilTextModel v = getLyric(line);
-      if (v.time == -1) {
-        continue;
-      }
-      map[v.time] = new LyricUtilMapValueModel(v.text, '');
+    } catch (exception) {
+      print(exception);
     }
-    if (tlyricString != null) {
-      for (String line in tlyricString.split('\n')) {
-        if (line == null || line == '') {
-          continue;
-        }
-        LyricUtilTextModel v = getLyric(line);
-        if (v.time == -1) {
-          continue;
-        }
-        if (map[v.time] != null) {
-          map[v.time].tlyric = v.text;
-        }
-      }
-    }
-    final list = new List<LyricModel>();
-    map.forEach((key, value) {
-      LyricModel v = new LyricModel(key, value.lrc, value.tlyric);
-      list.add(v);
-    });
-    return new Lyric(list);
   }
 
   static LyricUtilTextModel getLyric(String line) {
