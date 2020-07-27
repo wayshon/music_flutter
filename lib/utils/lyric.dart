@@ -34,16 +34,18 @@ class LyricUtil {
       }
       map[v.time] = new LyricUtilMapValueModel(v.text, '');
     }
-    for (String line in tlyricString.split('\n')) {
-      if (line == null || line == '') {
-        continue;
-      }
-      LyricUtilTextModel v = getLyric(line);
-      if (v.time == -1) {
-        continue;
-      }
-      if (map[v.time] != null) {
-        map[v.time].tlyric = v.text;
+    if (tlyricString != null) {
+      for (String line in tlyricString.split('\n')) {
+        if (line == null || line == '') {
+          continue;
+        }
+        LyricUtilTextModel v = getLyric(line);
+        if (v.time == -1) {
+          continue;
+        }
+        if (map[v.time] != null) {
+          map[v.time].tlyric = v.text;
+        }
       }
     }
     final list = new List<LyricModel>();

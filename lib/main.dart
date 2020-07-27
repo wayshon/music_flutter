@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
-// import './home.dart';
-import './detail.dart';
-// import './animate/pointer.dart';
-// import './animate/disc.dart';
-// import './demo/demo.dart';
+import './home.dart';
+import 'package:provider/provider.dart';
+import 'store/favor.dart';
 
 void main() {
-  runApp(MyApp());
+  final Model = new CommonModel();
+  runApp(Provider<Set<String>>.value(
+    value: null,
+    child: ChangeNotifierProvider.value(
+      value: Model,
+      child: new MyApp(),
+    ),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -14,14 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: 'Music',
-      home: Detail(),
-      // home: Padding(
-      //   padding: const EdgeInsets.only(top: 60.0),
-      //   child: Stack(
-      //     alignment: const FractionalOffset(0.5, 0.0),
-      //     children: <Widget>[ParentScreen()],
-      //   ),
-      // ),
+      home: Home(),
       theme: new ThemeData(
         primaryColor: Colors.blue,
       ),

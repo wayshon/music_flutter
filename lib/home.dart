@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:audioplayers/audio_cache.dart';
-import 'package:audioplayers/audioplayers.dart';
+import './list.dart';
+import './favorList.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -8,51 +8,36 @@ class Home extends StatefulWidget {
 }
 
 class HomeState extends State<Home> {
-  final audioPlayer = AudioPlayer();
-  final cachePlayer = AudioCache();
-
-  @override
-  void initState() {
-    super.initState();
-    // AudioPlayer.logEnabled = true;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: Text('XMusic'),
       ),
       body: Column(
         children: <Widget>[
           RaisedButton(
-            onPressed: playLocal,
-            child: Text('播放本地'),
+            onPressed: jumpAllList,
+            child: Text('所有列表'),
           ),
           RaisedButton(
-            onPressed: play,
-            child: Text('播放线上'),
+            onPressed: jumpFavorList,
+            child: Text('我的收藏'),
           ),
         ],
       ),
     );
   }
 
-  playLocal() async {
-    cachePlayer.play('audio/Ultraman.mp3');
+  jumpAllList() async {
+    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
+      return new AllList();
+    }));
   }
 
-  play() async {
-    int result = await audioPlayer
-        .play('https://calcbit.com/resource/audio/Ultraman/Seven.mp3');
-    if (result == 1) {
-      print('play success ==');
-    } else {
-      print('play failed');
-    }
-
-    audioPlayer.onAudioPositionChanged.listen((p) async {
-      print('inMilliseconds =========   ${p.inMilliseconds}');
-    });
+  jumpFavorList() async {
+    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
+      return new FavorList();
+    }));
   }
 }

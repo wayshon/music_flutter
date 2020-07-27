@@ -24,6 +24,9 @@ dependencies:
   flutter:
     sdk: flutter
   audioplayers: "^0.15.1"
+  provider: ^4.3.1
+  shared_preferences: "^0.5.8"
+  flutter_spinkit: "^4.1.2"
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -50,13 +53,10 @@ flutter:
     - assets/audio/Leo.mp3
     - assets/audio/Seven.mp3
     - assets/audio/Ultraman.mp3
-    - assets/images/background.jpg
     - assets/images/pointer.png
-    - assets/images/cover.jpg
     - assets/images/disc.png
     - assets/images/play.png
-    - assets/json/lyric.json
-    - assets/txt/lyric.txt
+    - assets/images/paperbg.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
