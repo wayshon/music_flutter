@@ -49,7 +49,6 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
         new Scaffold(
           backgroundColor: Colors.transparent,
           appBar: new AppBar(
-            automaticallyImplyLeading: false,
             backgroundColor: Colors.transparent,
             elevation: 0.0,
             title: Container(
