@@ -73,7 +73,7 @@ class Cell extends StatelessWidget {
       ),
       onTap: () {
         Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-          return new Detail(model);
+          return new Detail();
         }));
       },
     );

@@ -66,14 +66,11 @@ class AllListState extends State<AllList> {
                 Model.update(favorites);
               });
             }, () {
-              // Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-              //   return new Detail(model);
-              // }));
-
-              player.onDurationChanged(this.onDurationChanged);
-              player.onAudioPositionChanged(this.onAudioPositionChanged);
-              player.onPlaying(this.onPlaying);
-              player.play(model);
+              player.play(model: model);
+              Navigator.of(context)
+                  .push(new MaterialPageRoute(builder: (context) {
+                return new Detail();
+              }));
             }),
           ];
           if (i > 0) {
@@ -112,25 +109,6 @@ class AllListState extends State<AllList> {
         isLoading = false;
       });
     }
-  }
-
-  onDurationChanged(duration) {
-    print(duration.inMilliseconds);
-  }
-
-  onAudioPositionChanged(position) {
-    print(position.inMilliseconds);
-  }
-
-  onPlaying(isPlaying) {
-    print(isPlaying);
-  }
-
-  void deactivate() {
-    player.offDurationChanged(this.onDurationChanged);
-    player.offAudioPositionChanged(this.onAudioPositionChanged);
-    player.offPlaying(this.onPlaying);
-    super.deactivate();
   }
 }
 

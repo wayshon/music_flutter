@@ -3,19 +3,23 @@ import '../model/audio.dart';
 
 typedef void CompletedEventCallback();
 typedef void ErrorEventCallback(String e);
-typedef void PlayingEventCallback(bool isPlaying);
+typedef void StatusEventCallback(PlayerStatus status);
 typedef void DurationChangedEventCallback(Duration duration);
 typedef void AudioPositionChangedEventCallback(Duration position);
+
+enum PlayerStatus { init, process, pause, finish }
 
 class Player {
   final completedEvents = new Set<CompletedEventCallback>();
   final errorEvents = new Set<ErrorEventCallback>();
-  final playingEvents = new Set<PlayingEventCallback>();
+  final statusEvents = new Set<StatusEventCallback>();
   final durationChangedEvents = new Set<DurationChangedEventCallback>();
   final audioPositionChangedEvents =
       new Set<AudioPositionChangedEventCallback>();
 
   final AudioPlayer audioPlayer = new AudioPlayer();
+  AudioModel model;
+  PlayerStatus status = PlayerStatus.init;
 
   /// 音量
   final double volume;
@@ -31,6 +35,8 @@ class Player {
     // 初始化
     audioPlayer
       ..onPlayerCompletion.listen((void s) {
+        status = PlayerStatus.finish;
+        statusEvents.forEach((fn) => fn(PlayerStatus.finish));
         completedEvents.forEach((fn) => fn());
       })
       ..onPlayerError.listen((String e) {
@@ -54,23 +60,30 @@ class Player {
   // 工厂模式
   factory Player() => _getInstance();
 
-  play(AudioModel model) {
+  play({AudioModel model}) {
+    if (model != null) {
+      this.model = model;
+    }
+    AudioModel _model = this.model;
     audioPlayer.play(
-      model.url,
+      _model.url,
       isLocal: isLocal,
       volume: volume,
     );
-    playingEvents.forEach((fn) => fn(true));
+    status = PlayerStatus.process;
+    statusEvents.forEach((fn) => fn(PlayerStatus.process));
   }
 
   pause() {
     audioPlayer.pause();
-    playingEvents.forEach((fn) => fn(false));
+    status = PlayerStatus.pause;
+    statusEvents.forEach((fn) => fn(PlayerStatus.pause));
   }
 
   resume() {
     audioPlayer.resume();
-    playingEvents.forEach((fn) => fn(true));
+    status = PlayerStatus.process;
+    statusEvents.forEach((fn) => fn(PlayerStatus.process));
   }
 
   onCompleted(CompletedEventCallback fn) {
@@ -81,8 +94,8 @@ class Player {
     errorEvents.add(fn);
   }
 
-  onPlaying(PlayingEventCallback fn) {
-    playingEvents.add(fn);
+  onStatus(StatusEventCallback fn) {
+    statusEvents.add(fn);
   }
 
   onDurationChanged(DurationChangedEventCallback fn) {
@@ -101,8 +114,8 @@ class Player {
     errorEvents.remove(fn);
   }
 
-  offPlaying(PlayingEventCallback fn) {
-    playingEvents.remove(fn);
+  offPlaying(StatusEventCallback fn) {
+    statusEvents.remove(fn);
   }
 
   offDurationChanged(DurationChangedEventCallback fn) {
@@ -111,5 +124,20 @@ class Player {
 
   offAudioPositionChanged(AudioPositionChangedEventCallback fn) {
     audioPositionChangedEvents.remove(fn);
+  }
+
+  seek(Duration d) {
+    audioPlayer.seek(d);
+  }
+
+  palyHandle() {
+    if ((status == PlayerStatus.init || status == PlayerStatus.finish) &&
+        model != null) {
+      play();
+    } else if (status == PlayerStatus.process) {
+      pause();
+    } else if (status == PlayerStatus.pause) {
+      resume();
+    }
   }
 }
