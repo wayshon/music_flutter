@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import './widget/toast.dart';
 import 'package:provider/provider.dart';
-import 'store/favor.dart';
+import 'store/common.dart';
 import 'dart:io';
 import 'dart:convert';
 import './model/audio.dart';

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:music_flutter/model/audio.dart';
 import 'package:provider/provider.dart';
-import 'store/favor.dart';
+import 'store/common.dart';
+import './detail.dart';
 
 class FavorList extends StatelessWidget {
   @override
@@ -71,7 +72,9 @@ class Cell extends StatelessWidget {
         style: TextStyle(fontSize: 18.0),
       ),
       onTap: () {
-        // TODO:play
+        Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
+          return new Detail(model);
+        }));
       },
     );
   }

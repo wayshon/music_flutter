@@ -4,6 +4,7 @@ import './utils/lyric.dart';
 import './model/lyric.dart';
 import './widget/lyricPannel.dart';
 import './model/audio.dart';
+import 'package:flutter/scheduler.dart';
 
 const _LyricPath = 'https://calcbit.com/resource/lyric/';
 
@@ -64,12 +65,13 @@ class PlayerState extends State<Player> {
   @override
   void initState() {
     super.initState();
-    // LyricUtil.loadJson(_LyricPath + widget.model.id).then((Lyric lyric) {
-    //   setState(() {
-    //     this.lyric = lyric;
-    //     panel = new LyricPanel(this.lyric);
-    //   });
-    // });
+    LyricUtil.loadJson(_LyricPath + widget.model.id + '.json')
+        .then((Lyric lyric) {
+      setState(() {
+        this.lyric = lyric;
+        panel = new LyricPanel(this.lyric);
+      });
+    });
 
     audioPlayer = new AudioPlayer();
     audioPlayer
@@ -96,6 +98,8 @@ class PlayerState extends State<Player> {
           }
         });
       });
+
+    SchedulerBinding.instance.addPostFrameCallback((_) => play());
   }
 
   @override
@@ -145,7 +149,7 @@ class PlayerState extends State<Player> {
   }
 
   Widget buildTimer(BuildContext context) {
-    var style = new TextStyle(color: widget.color);
+    final style = new TextStyle(color: widget.color);
     return new Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       mainAxisSize: MainAxisSize.max,

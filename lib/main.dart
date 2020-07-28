@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import './home.dart';
 import 'package:provider/provider.dart';
-import 'store/favor.dart';
+import 'store/common.dart';
 
 void main() {
   final Model = new CommonModel();
