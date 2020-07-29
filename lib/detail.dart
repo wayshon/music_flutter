@@ -6,7 +6,6 @@ import './model/audio.dart';
 import './widget/player.dart';
 import 'package:flutter/scheduler.dart';
 import './utils/lyric.dart';
-import './model/lyric.dart';
 import './widget/lyricPannel.dart';
 
 const _LyricPath = 'https://calcbit.com/resource/lyric/';
@@ -26,28 +25,21 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
   Duration duration;
   Duration position;
   double sliderValue;
-  Lyric lyric;
   LyricPanel panel;
 
   @override
   void initState() {
     super.initState();
     playerStatus = player.status;
-    if (player.model != null) {
-      LyricUtil.loadJson(_LyricPath + player.model.id + '.json')
-          .then((Lyric lyric) {
-        setState(() {
-          this.lyric = lyric;
-          panel = new LyricPanel(this.lyric);
-        });
-      });
-    }
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
+      resetPanelData();
       player.onDurationChanged(this.onDurationChanged);
       player.onAudioPositionChanged(this.onAudioPositionChanged);
       player.onStatus(this.onPlayerStatus);
       player.onError(this.onError);
+      player.onModelChanged(this.onModelChanged);
+      player.onCompleted(this.onPlayerCompleted);
     });
   }
 
@@ -57,6 +49,8 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
     player.offAudioPositionChanged(this.onAudioPositionChanged);
     player.offPlaying(this.onPlayerStatus);
     player.offError(this.onError);
+    player.offModelChanged(this.onModelChanged);
+    player.offCompleted(this.onPlayerCompleted);
     super.deactivate();
   }
 
@@ -153,6 +147,22 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
     );
   }
 
+  resetPanelData() {
+    if (player.duration != null && player.position != null) {
+      setState(() {
+        this.sliderValue =
+            (player.position.inSeconds / player.duration.inSeconds);
+      });
+    }
+    if (player.model != null) {
+      LyricUtil.loadJson(_LyricPath + player.model.id + '.json').then((lyric) {
+        setState(() {
+          panel = new LyricPanel(lyric);
+        });
+      });
+    }
+  }
+
   onDurationChanged(Duration duration) {
     setState(() {
       this.duration = duration;
@@ -166,10 +176,6 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
     setState(() {
       this.position = position;
 
-      if (panel != null) {
-        panel.handler(position.inMilliseconds);
-      }
-
       if (duration != null) {
         this.sliderValue = (position.inSeconds / duration.inSeconds);
       }
@@ -177,7 +183,6 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
   }
 
   onPlayerStatus(PlayerStatus status) {
-    print('status =============    $status');
     setState(() {
       playerStatus = status;
     });
@@ -189,6 +194,18 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
         content: new Text(e),
       ),
     );
+  }
+
+  onModelChanged(AudioModel model) {
+    setState(() {
+      panel = null;
+    });
+    resetPanelData();
+  }
+
+  onPlayerCompleted() {
+    print('onPlayerCompleted =======================');
+    player.next();
   }
 
   String formatDuration(Duration d) {
@@ -244,7 +261,7 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
           children: <Widget>[
             new IconButton(
               onPressed: () {
-                // TODO: onPressed
+                player.previous();
               },
               icon: new Icon(
                 Icons.skip_previous,
@@ -263,7 +280,7 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
             ),
             new IconButton(
               onPressed: () {
-                // TODO: onNext
+                player.next();
               },
               icon: new Icon(
                 Icons.skip_next,
@@ -278,7 +295,6 @@ class DetailState extends State<Detail> with TickerProviderStateMixin {
         onChanged: (newValue) {
           if (duration != null) {
             int seconds = (duration.inSeconds * newValue).round();
-            print("audioPlayer.seek: $seconds");
             player.seek(new Duration(seconds: seconds));
           }
         },

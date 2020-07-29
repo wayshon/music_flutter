@@ -6,6 +6,7 @@ typedef void ErrorEventCallback(String e);
 typedef void StatusEventCallback(PlayerStatus status);
 typedef void DurationChangedEventCallback(Duration duration);
 typedef void AudioPositionChangedEventCallback(Duration position);
+typedef void ModelChangedEventCallback(AudioModel model);
 
 enum PlayerStatus { init, process, pause, finish }
 
@@ -16,10 +17,15 @@ class Player {
   final durationChangedEvents = new Set<DurationChangedEventCallback>();
   final audioPositionChangedEvents =
       new Set<AudioPositionChangedEventCallback>();
+  final modelChangedEvents = new Set<ModelChangedEventCallback>();
 
   final AudioPlayer audioPlayer = new AudioPlayer();
   AudioModel model;
   PlayerStatus status = PlayerStatus.init;
+  Duration duration;
+  Duration position;
+
+  List<AudioModel> playList;
 
   /// 音量
   final double volume;
@@ -43,9 +49,11 @@ class Player {
         errorEvents.forEach((fn) => fn(e));
       })
       ..onDurationChanged.listen((duration) {
+        this.duration = duration;
         durationChangedEvents.forEach((fn) => fn(duration));
       })
       ..onAudioPositionChanged.listen((position) {
+        this.position = position;
         audioPositionChangedEvents.forEach((fn) => fn(position));
       });
   }
@@ -60,7 +68,10 @@ class Player {
   // 工厂模式
   factory Player() => _getInstance();
 
-  play({AudioModel model}) {
+  play({AudioModel model, List<AudioModel> playList}) {
+    if (playList != null) {
+      this.playList = playList;
+    }
     if (model != null) {
       this.model = model;
     }
@@ -72,6 +83,7 @@ class Player {
     );
     status = PlayerStatus.process;
     statusEvents.forEach((fn) => fn(PlayerStatus.process));
+    modelChangedEvents.forEach((fn) => fn(this.model));
   }
 
   pause() {
@@ -106,6 +118,10 @@ class Player {
     audioPositionChangedEvents.add(fn);
   }
 
+  onModelChanged(ModelChangedEventCallback fn) {
+    modelChangedEvents.add(fn);
+  }
+
   offCompleted(CompletedEventCallback fn) {
     completedEvents.remove(fn);
   }
@@ -126,6 +142,10 @@ class Player {
     audioPositionChangedEvents.remove(fn);
   }
 
+  offModelChanged(ModelChangedEventCallback fn) {
+    modelChangedEvents.remove(fn);
+  }
+
   seek(Duration d) {
     audioPlayer.seek(d);
   }
@@ -139,5 +159,35 @@ class Player {
     } else if (status == PlayerStatus.pause) {
       resume();
     }
+  }
+
+  previous() {
+    if (playList == null) {
+      return;
+    }
+    int index = playList.indexOf(model);
+    if (index == -1) {
+      return;
+    }
+    int i = index - 1;
+    if (i < 0) {
+      i = playList.length - 1;
+    }
+    play(model: playList[i]);
+  }
+
+  next() {
+    if (playList == null) {
+      return;
+    }
+    int index = playList.indexOf(model);
+    if (index == -1) {
+      return;
+    }
+    int i = index + 1;
+    if (i >= playList.length) {
+      i = 0;
+    }
+    play(model: playList[i]);
   }
 }

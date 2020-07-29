@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import '../model/lyric.dart';
+import './player.dart';
+import 'package:flutter/scheduler.dart';
 
 typedef void PositionChangeHandler(int millisecond);
 
 class LyricPanel extends StatefulWidget {
   final Lyric lyric;
-  PositionChangeHandler handler;
 
   LyricPanel(this.lyric);
 
@@ -17,20 +18,22 @@ class LyricPanel extends StatefulWidget {
 
 class LyricState extends State<LyricPanel> {
   int index = 0;
-  LyricModel currentSlice;
+  LyricModel currentModel;
+  Player player = new Player();
 
   @override
   void initState() {
     super.initState();
-    widget.handler = ((position) {
-      LyricModel model = widget.lyric.list[index];
-      if (position > model.millisecond) {
-        index++;
-        setState(() {
-          currentSlice = model;
-        });
-      }
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      resetIndex();
+      player.onAudioPositionChanged(this.onAudioPositionChanged);
     });
+  }
+
+  @override
+  void deactivate() {
+    player.offAudioPositionChanged(this.onAudioPositionChanged);
+    super.deactivate();
   }
 
   @override
@@ -42,13 +45,13 @@ class LyricState extends State<LyricPanel> {
           child: Column(
             children: <Widget>[
               Text(
-                currentSlice != null ? currentSlice.lrc : "",
+                currentModel != null ? currentModel.lrc : "",
                 style: new TextStyle(
                   color: Colors.white,
                 ),
               ),
               Text(
-                currentSlice != null ? currentSlice.tlyric : "",
+                currentModel != null ? currentModel.tlyric : "",
                 style: new TextStyle(
                   color: Colors.white,
                 ),
@@ -78,5 +81,41 @@ class LyricState extends State<LyricPanel> {
       }
     }
     return items;
+  }
+
+  resetIndex() {
+    if (player.position != null) {
+      int ms = player.position.inMilliseconds;
+      for (int i = 0; i < widget.lyric.list.length; i++) {
+        LyricModel model = widget.lyric.list[i];
+        if (ms >= model.millisecond) {
+          index = i;
+        } else {
+          break;
+        }
+      }
+      setState(() {
+        currentModel = widget.lyric.list[index];
+      });
+    }
+  }
+
+  onAudioPositionChanged(Duration position) {
+    int ms = position.inMilliseconds;
+    // ms 在前一个之前或者后一个之后，就需要重新定位index了
+    if ((index > 0 && ms <= widget.lyric.list[index - 1].millisecond) ||
+        (index < widget.lyric.list.length - 1 &&
+            ms >= widget.lyric.list[index + 1].millisecond)) {
+      resetIndex();
+      return;
+    }
+
+    LyricModel model = widget.lyric.list[index];
+    if (ms > model.millisecond) {
+      index++;
+      setState(() {
+        currentModel = model;
+      });
+    }
   }
 }
