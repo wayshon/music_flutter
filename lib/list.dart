@@ -42,7 +42,8 @@ class AllListState extends State<AllList> {
 
     List<Widget> actions = <Widget>[];
     if (player.model != null) {
-      actions.add(Container(
+      actions.add(Padding(
+        padding: EdgeInsets.only(right: 20.0),
         child: GestureDetector(
             onTap: jumpDetail,
             child: new AudioIcon(
