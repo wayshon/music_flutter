@@ -2,6 +2,10 @@
 
 模仿网易云播放器（目前只做了简单列表和播放页）
 
+![demo1](./readme-images/demo1.png)
+
+![demo2](./readme-images/demo2.png)
+
 ### 结构
 
 #### main.dart
