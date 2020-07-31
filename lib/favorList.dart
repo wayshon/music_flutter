@@ -3,8 +3,11 @@ import 'package:music_flutter/model/audio.dart';
 import 'package:provider/provider.dart';
 import 'store/common.dart';
 import './detail.dart';
+import './widget/player.dart';
 
 class FavorList extends StatelessWidget {
+  Player player = new Player();
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -27,17 +30,22 @@ class FavorList extends StatelessWidget {
 
   Widget buildList(context) {
     final Model = Provider.of<CommonModel>(context);
-    final showList = Model.favorites.toList();
+    final list = Model.favorites.toList();
     return new ListView.builder(
         padding: const EdgeInsets.all(16.0),
-        itemCount: showList.length,
+        itemCount: list.length,
         itemBuilder: (context, i) {
-          final model = showList[i];
+          final model = list[i];
           final List<Widget> renderList = [
             new Dismissible(
               key: Key('${model.id}_$i'),
               direction: DismissDirection.endToStart,
-              child: new Cell(model),
+              child: new Cell(model, () {
+                if (player.model == null || player.model.id != model.id) {
+                  player.play(model: model, playList: list);
+                }
+                jumpDetail(context);
+              }),
               background: new Container(
                   color: Colors.red,
                   child: new ListTile(
@@ -57,12 +65,19 @@ class FavorList extends StatelessWidget {
           return new Column(children: renderList);
         });
   }
+
+  jumpDetail(context) {
+    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
+      return new Detail();
+    }));
+  }
 }
 
 class Cell extends StatelessWidget {
   final AudioModel model;
+  final onTap;
 
-  Cell(this.model);
+  Cell(this.model, this.onTap);
 
   @override
   Widget build(BuildContext context) {
@@ -71,11 +86,7 @@ class Cell extends StatelessWidget {
         model.name,
         style: TextStyle(fontSize: 18.0),
       ),
-      onTap: () {
-        Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-          return new Detail();
-        }));
-      },
+      onTap: onTap,
     );
   }
 }
